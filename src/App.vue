@@ -1,30 +1,29 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <component :is="layout"> <router-view /> </component>
 </template>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script lang="ts" setup>
+import 'bootstrap/dist/js/bootstrap.js'
+import AppLayoutDefault from '@/views/shared/_LayoutDefault.vue';
+import { ref ,watch, markRaw} from 'vue';
+import { useRoute } from 'vue-router'
+const route = useRoute()
+const layout = ref();
+watch(
+  () => route.meta?.layout as string | undefined, 
+  async (metaLayout) => {
+    try {
+      console.log(metaLayout);
+      const component = metaLayout && await import(`./views/shared/${metaLayout}.vue`)
+      layout.value = markRaw(component?.default || AppLayoutDefault) 
+    } catch (e) {
+      console.log(e);
+      layout.value = markRaw(AppLayoutDefault)
     }
-  }
-}
+  },
+  { immediate: true }
+)
+</script>
+<style lang="scss">
+@import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css');
+@import './assets/scss/vertical-layout-light/style.scss';
 </style>
