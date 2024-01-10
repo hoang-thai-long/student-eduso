@@ -5,6 +5,7 @@ const getQueryURL = (name: string) => {
 }
 
 const config = {
+    keyUser : "dataUser",
     keyToken: "TokenData",
     getQueryURL: getQueryURL,
     menuData:[

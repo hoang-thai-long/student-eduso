@@ -6,27 +6,28 @@ import LoginDashboard from '@/components/LoginComponent.vue'
 import { defineAsyncComponent } from 'vue'
 import SDefaultVue from '@/components/Skeletons/SDefault.vue'
 import PageNotFound from '@/components/PageNotFound.vue'
+import config from '../store/config'
 const arrIcons = ["mdi-floor-plan"]
-const createRoute = (path:string,name:string,component:any,auth=false,meta?:{[key:string]:any})=>{
+const createRoute = (path: string, name: string, component: any, auth = false, meta?: { [key: string]: any }) => {
   return {
-    path:path,
-    name:name,
-    component:component,
-    meta:{
+    path: path,
+    name: name,
+    component: component,
+    meta: {
       requiresAuth: auth,
       ...meta
     }
   }
 }
-const createRouteAsync = (path:string,name:string,component:any,auth=false,meta?:{[key:string]:any})=>{
+const createRouteAsync = (path: string, name: string, component: any, auth = false, meta?: { [key: string]: any }) => {
   return {
-    path:path,
-    name:name,
-    component:defineAsyncComponent({
-      loader:() => component,
-      loadingComponent:SDefaultVue
+    path: path,
+    name: name,
+    component: defineAsyncComponent({
+      loader: () => component,
+      loadingComponent: SDefaultVue
     }),
-    meta:{
+    meta: {
       requiresAuth: auth,
       ...meta
     }
@@ -34,10 +35,10 @@ const createRouteAsync = (path:string,name:string,component:any,auth=false,meta?
 }
 
 const routes: Array<RouteRecordRaw> = [
-  createRoute("/","dashboard",DashBoard,true),
-  createRoute("/login","login",LoginDashboard,false,{layout:'_LayoutEmpty'}),
-  createRouteAsync("/about","about",import("../views/AboutView.vue"),true),
-  createRoute("/:catchAll(.*)","404",PageNotFound,false,{layout:'_LayoutEmpty'}),
+  createRoute("/", "dashboard", DashBoard, true),
+  createRoute("/login", "login", LoginDashboard, false, { layout: '_LayoutEmpty' }),
+  createRouteAsync("/about", "about", import("../views/AboutView.vue"), true),
+  createRoute("/:catchAll(.*)", "404", PageNotFound, false, { layout: '_LayoutEmpty' }),
 ]
 
 const router = createRouter({
@@ -52,6 +53,15 @@ router.beforeEach((to, _from, next) => {
     if (!store.getters.isLoggedIn) {
       next({ name: 'login' })
     } else {
+
+      const strData = localStorage.getItem(config.keyUser);
+      if (strData) {
+        const user = JSON.parse(strData);
+        if (user) {
+          store.commit("SET_USER", user);
+        }
+      }
+
       next() // go to wherever I'm going
     }
   } else {

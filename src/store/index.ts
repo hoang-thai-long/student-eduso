@@ -3,7 +3,7 @@ import config from './config'
 
 export default createStore({
   state: {
-    currentUser:{id:"",name:"",},
+    currentUser:{id:"",name:"", email:"",},
     token:localStorage.getItem(config.keyToken),
     authenticated:localStorage.getItem(config.keyToken) != null,
   },

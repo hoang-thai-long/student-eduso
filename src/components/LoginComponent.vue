@@ -65,7 +65,6 @@ const goTo = () => {
         location.href = href;
     }
     else {
-        console.log(router);
         router.push({
             name: 'dashboard', query: {
                 ...route.query
@@ -75,13 +74,15 @@ const goTo = () => {
 }
 
 const login = () => {
-    console.log(username.value, password.value);
     localStorage.setItem(config.keyToken, "test");
-    store.commit("SET_USER",
-        {
+    const user = {
             id:"test",
             name:"Jony Deep",
-        }
+            email:username.value
+        };
+    localStorage.setItem(config.keyUser,JSON.stringify(user))
+    store.commit("SET_USER",
+        user
     )
     goTo();
 }
